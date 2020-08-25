@@ -115,6 +115,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
+include_directories(include ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -194,8 +195,6 @@ catkin_package(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-include_directories(include ${catkin_INCLUDE_DIRS})
-
-add_executable(simple_mover src/simple_mover.cpp)
-target_link_libraries(simple_mover ${catkin_LIBRARIES})
-add_dependencies(simple_mover simple_arm_generate_messages_cpp)
+add_executable(arm_mover src/arm_mover.cpp)
+target_link_libraries(arm_mover ${catkin_LIBRARIES})
+add_dependencies(arm_mover simple_arm_generate_messages_cpp)
