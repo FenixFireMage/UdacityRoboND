@@ -182,62 +182,47 @@ end_check:
     float forward_velocities[] = {0.5, 0.0};
     float right_velocities[] = {0.0, -0.5};
     float stop[] = {0.0, 0.0};
-    enum image_position
-    {
-        left,
-        forward,
-        right
-    } white_ball_position;
 
     // Then, identify if this pixel falls in the left, mid, or right side of the image
+    // Depending on the white ball position, call the drive_bot function and pass velocities to it
     switch (ball_found)
     {
     case yes: // if (ball_found)
         switch (high_precision)
         {
         case yes: // check if precision is high
-            if (ball_volume_in_the_left > ball_volume_in_forward && ball_volume_in_the_left > ball_volume_in_the_right)
+            if (ball_volume_in_the_left > ball_volume_in_forward && ball_volume_in_the_left > ball_volume_in_the_right) // Request a move left
             {
-                white_ball_position = left;
-            }
-            else if (ball_volume_in_the_right > ball_volume_in_forward && ball_volume_in_the_right > ball_volume_in_the_left)
-            {
-                white_ball_position = right;
-            }
-            else
-            {
-                white_ball_position = forward;
-            }
-            break;
-        default:
-            if (width_index < left_and_forward_divider)
-            {
-                white_ball_position = left;
-            }
-            else if (width_index > forward_and_right_divider)
-            {
-                white_ball_position = right;
-            }
-            else
-            {
-                white_ball_position = forward;
-            }
-            break;
-        }
-        // Depending on the white ball position, call the drive_bot function and pass velocities to it
-        switch (white_ball_position)
-        {
-        case left: // Request a move left
             ROS_INFO("Driving left");
             drive_robot(left_velocities[0], left_velocities[1]);
-            break;
-        case right: // Request a move right
+            }
+            else if (ball_volume_in_the_right > ball_volume_in_forward && ball_volume_in_the_right > ball_volume_in_the_left) // Request a move right
+            {
             ROS_INFO("Driving right");
             drive_robot(right_velocities[0], right_velocities[1]);
-            break;
-        case forward: // Request a move forward
+            }
+            else // Request a move forward
+            {
             ROS_INFO("Driving forward");
             drive_robot(forward_velocities[0], forward_velocities[1]);
+            }
+            break;
+        default: // assume precision is low
+            if (width_index < left_and_forward_divider) // Request a move left
+            {
+            ROS_INFO("Driving left");
+            drive_robot(left_velocities[0], left_velocities[1]);
+            }
+            else if (width_index > forward_and_right_divider) // Request a move right
+            {
+            ROS_INFO("Driving right");
+            drive_robot(right_velocities[0], right_velocities[1]);
+            }
+            else // Request a move forward
+            {
+            ROS_INFO("Driving forward");
+            drive_robot(forward_velocities[0], forward_velocities[1]);
+            }
             break;
         }
         break;
